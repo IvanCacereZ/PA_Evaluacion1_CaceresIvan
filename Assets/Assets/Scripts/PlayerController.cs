@@ -7,14 +7,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D myRBD2;
     [SerializeField] private float velocityModifier = 5f;
     [SerializeField] private float rayDistance = 10f;
-    [SerializeField] private AnimatorController animatorController;
     [SerializeField] private SpriteRenderer spriteRenderer;
-
+    [SerializeField] private Transform Transform;
+    [SerializeField] private GameObject Bullet;
     private void Update() {
         Vector2 movementPlayer = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         myRBD2.velocity = movementPlayer * velocityModifier;
 
-        animatorController.SetVelocity(velocityCharacter: myRBD2.velocity.magnitude);
 
         Vector2 mouseInput = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -24,6 +23,7 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0)){
             Debug.Log("Right Click");
+            Instantiate(Bullet, Transform.transform.position, Transform.transform.rotation);
         }else if(Input.GetMouseButtonDown(1)){
             Debug.Log("Left Click");
         }
