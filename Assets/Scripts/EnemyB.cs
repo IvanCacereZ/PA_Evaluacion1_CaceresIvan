@@ -7,7 +7,7 @@ public class EnemyB : MonoBehaviour
     [SerializeField] private Rigidbody2D myRB2D;
     [SerializeField] private float velocityModifier;
     [SerializeField] private LayerMask myLayers;
-    //[SerializeField] private float distanceModifier = 10f;
+    [SerializeField] private PlayerController player;
     private int OrientacionRayCast = 1;
     private void Start()
     {
@@ -34,7 +34,9 @@ public class EnemyB : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Player") {
+        if(collision.gameObject.tag == "Player") 
+        {
+            this.player.RestarVida(30);
             Destroy(this.gameObject);
         }
     }

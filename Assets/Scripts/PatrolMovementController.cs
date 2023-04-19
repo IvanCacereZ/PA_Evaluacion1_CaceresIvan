@@ -6,13 +6,14 @@ public class PatrolMovementController : MonoBehaviour
 {
     [SerializeField] private Transform[] checkpointsPatrol;
     [SerializeField] private Rigidbody2D myRBD2;
-    [SerializeField] private AnimatorController animatorController;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private float velocityModifier = 5f;
     [SerializeField] private LayerMask myLayers;
-    [SerializeField] private float distanceModifier = 10;
+    [SerializeField] private float distanceModifier = 15;
+    [SerializeField] private PlayerController player;
     private Transform currentPositionTarget;
     private int patrolPos = 0;
+    
 
     private void Start() {
         currentPositionTarget = checkpointsPatrol[patrolPos];
@@ -20,18 +21,18 @@ public class PatrolMovementController : MonoBehaviour
     }
     private void Update()
     {
+        float anguloRotacion = transform.rotation.eulerAngles.z;
+        float anguloRadianes = anguloRotacion * Mathf.Deg2Rad;
+        Vector2 direccionAdelante = new Vector2(Mathf.Cos(anguloRadianes), Mathf.Sin(anguloRadianes));
         CheckNewPoint();
-    }
-    private void FixedUpdate() {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(1,0 ,0), out hit, distanceModifier, myLayers))
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direccionAdelante, distanceModifier, myLayers);
+        Debug.DrawRay(transform.position, direccionAdelante, Color.red);
+        if (hit.collider != null)
         {
-            Debug.DrawRay(transform.position, new Vector3(1, 0, 0) * distanceModifier, Color.yellow);
-            velocityModifier = 10.0f;
+            velocityModifier = velocityModifier * 2;
         }
         else
         {
-            Debug.DrawRay(transform.position, new Vector3(1, 0, 0) * distanceModifier, Color.red);
             velocityModifier = 5.0f;
         }
     }
@@ -47,5 +48,13 @@ public class PatrolMovementController : MonoBehaviour
 
     private void CheckFlip(float x_Position){
         spriteRenderer.flipX = (x_Position - transform.position.x) < 0;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            this.player.RestarVida(20);
+            Destroy(this.gameObject);
+        }
     }
 }
